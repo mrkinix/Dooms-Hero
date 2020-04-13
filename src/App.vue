@@ -1,9 +1,10 @@
 <template>
     <div id="app">
-        <div id="nav">eeezze</div>
         <router-view />
     </div>
 </template>
+
+
 
 <style lang="scss">
 #app {

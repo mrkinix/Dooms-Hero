@@ -1,48 +1,50 @@
 <template>
-    <img @click="rightTrajectory" :key="x_initial.id"
-    v-bind:style="{ left: x_pos, bottom: y_pos }" 
-    class="pick" :src="require('@/assets/pick.png')">
+    <img :key="id" class="pick"
+    v-bind:style="[reverse ? { 'z-index': 9999 - id, left: x_pos, bottom: y_pos,
+    transform: 'rotate(180deg)'}
+    : { 'z-index': 9999 - id, left: x_pos, bottom: y_pos }]"
+    :src="require('@/assets/pick.png')">
 </template>
 
 <script>
+import * as motion from '@/scripts/pickMotion';
+import * as delay from 'delay';
+
 export default {
     data() {
         return {
             y_pos: this.y,
             x_pos: this.x,
             x_initial: this.x,
-        }
+        };
     },
-    props: ['aa', 'x', 'y'],
+    props: ['aa', 'x', 'y', 'action', 'reverse', 'id', 'leader'],
+    mounted() {
+        switch(this.action) {
+            case 'right':
+                motion.rightTrajectory(this)
+                break;
+            case 'left':
+                motion.leftTrajectory(this)
+                break;
+            case 'middle':
+                motion.middleTrajectory(this)
+                break;
+        };
+        this.close();
+    },
     methods: {
-        middleTrajectory: function() {
-            for (let i = 0; i < 50; i++) {
-                const that = this;
-                setTimeout(() => {
-                    that.y_pos = parseInt(that.y_pos) - 0.1 + 'vh' 
-                }, i * 60)                
-            }
+        close: async function() {
+ 
+            await delay(3000);
+            this.$emit('destruction')
+            this.$destroy;
+            this.$el.parentNode.removeChild(this.$el);
         },
-        leftTrajectory: function() {
-            for (let i = 0; i < 50; i++) {
-                const that = this;
-                setTimeout(() => {
-                    that.y_pos = parseInt(that.y_pos) - 0.1 + 'vh' 
-                    that.x_pos = `calc(5% + 12.5vh + ${(parseInt(this.y_pos) / 3.98)}vh)`
-                }, i * 60)                
-            }
-        },
-        rightTrajectory: function() {
-            for (let i = 0; i < 50; i++) {
-                const that = this;
-                setTimeout(() => {
-                    that.y_pos = parseInt(that.y_pos) - 0.1 + 'vh' 
-                    console.log(this.x_initial)
-                    that.x_pos = `calc(5% + 61.6vh - ${(parseInt(this.y_pos) / 3.63)}vh)`
-                    console.log(this.x_pos);
-                }, i * 60)                
-            }
-        }
+    },
+    async created() {
+        await delay(2300);
+        this.$emit('hittable');
     },
 }
 </script>

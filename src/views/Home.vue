@@ -1,5 +1,11 @@
 <template>
     <div class="home" ref="container">
+        <div v-if="started">
+            <img class="background" :src="require('@/assets/background.jpg')">
+            <audio autoplay>
+                <source :src="require('@/assets/songs/doom_Rip_and_Tear.mp3')" type="audio/mp3">
+            </audio>
+        </div>
         <div class="toggle_ui" v-bind:style="{ opacity: playing }">
             <nav>
                 <ul>
@@ -25,20 +31,58 @@
 </template>
 
 <script>
-import * as guitar from '@/scripts/guitar';
+import * as guitar from '@/scripts/initGame.js';
+import { generate } from '@/scripts/generateSong';
+import * as delay from 'delay';
 
 export default {
     data() {
         return {
             playing: '1',
+            started: false,
             left_pos_board: '0',
+            created: 0,
+            leader: 0,
+            queue: [],
+            hittable: false,
+            hit: false
         }
     },
     methods: {
-        startGame: function() {
-            guitar.rightInit(this);
+        startGame: async function() {
+            const KEYS = ['f', 'g', 'h']
+            const STRINGS = { f: 'left', g: 'middle', h: 'right'}
+            const DIRECTION = ['ArrowUp', 'ArrowDown'];
             guitar.createUi(this);
-        }
+            generate(this);
+            await delay(4200);
+            this.started = true;
+            window.addEventListener('keydown', async(e) => {
+                if (KEYS.includes(e.key)) {
+                    if ((this.queue[0] === STRINGS[e.key] && this.hittable) ) {
+                        this.queue.shift();
+                        this.hit = true;
+                        console.log('%c +1', 'color: green');
+                        this.hittable = false
+                    }
+                    else {
+                        console.log('%c -1', 'color: red')
+                    }
+                }
+            });
+        },
+        test: function() {
+            if (!this.hit) this.queue.shift();
+            else { 
+                this.hit = false;
+                this.hittable = false
+            }
+        },
+        test1: function() {
+            this.hittable = true
+        },
+    },
+    created() {
     },
 }
 </script>
@@ -50,6 +94,12 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
+}
+
+.background {
+    height: 100%;
+    width: auto;
+    opacity: .1;
 }
     
 .home {
