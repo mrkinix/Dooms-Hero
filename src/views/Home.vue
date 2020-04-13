@@ -1,23 +1,26 @@
 <template>
     <div class="home" ref="container">
-        <nav>
-            <ul>
-                <h2>Chiboub</h2>
-                <li>
-                    <a>Gallery</a>
-                    <a>About</a>
-                    <a>Contact</a>
-                </li>
-            </ul>
-        </nav>
-        <div>
-            <h1>Welcome to my portfolio</h1>
-            <span>Hi, I'm Hedi Ben Chiboub, I'm a 19 year old self-taught programmer.
-                You can find more about me in my <span>About</span> page.</span>
+        <div class="toggle_ui" v-bind:style="{ opacity: playing }">
+            <nav>
+                <ul>
+                    <h2>Chiboub</h2>
+                    <li>
+                        <a>Gallery</a>
+                        <a>About</a>
+                        <a>Contact</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="intro">
+                <h1>Welcome to my portfolio</h1>
+                <span>Hi, I'm Hedi Ben Chiboub, I'm a 19 year old self-taught programmer.
+                    You can find more about me in my <span>About</span> page.</span>
+            </div>
+            <!-- about this game -->
+            <button @click="startGame">Play song</button>
         </div>
-        <!-- about this game -->
-        <button @click="startGame">Play song</button>
-        <img class="guitar__board" :src="require('@/assets/guitar_board.png')" @click="startGame">
+        <img class="guitar__board" v-bind:style="{ left: `calc(5% + ${left_pos_board}` }"
+        :src="require('@/assets/guitar_board.png')" @click="startGame">
     </div>
 </template>
 
@@ -25,16 +28,29 @@
 import * as guitar from '@/scripts/guitar';
 
 export default {
+    data() {
+        return {
+            playing: '1',
+            left_pos_board: '0',
+        }
+    },
     methods: {
         startGame: function() {
-            guitar.leftInit(this);
+            guitar.rightInit(this);
+            guitar.createUi(this);
         }
     },
 }
 </script>
 
 <style lang="scss" scoped>
-
+.toggle_ui {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
     
 .home {
     padding: 0;
@@ -79,7 +95,7 @@ export default {
         bottom: 22.25vh;        
     }
 
-    div {
+    .intro {
         position: absolute;
         color: white;
         right: 5%;
