@@ -1,26 +1,18 @@
 <template>
     <div class="home" ref="container">
-        <div v-if="started">
-            <img class="background" :src="require('@/assets/background.jpg')">
-            <audio autoplay>
+        <h2 :class="{color: 'red'}">score: {{score}}</h2>
+            <audio ref="audio">
                 <source :src="require('@/assets/songs/doom_Rip_and_Tear.mp3')" type="audio/mp3">
             </audio>
+        <div v-if="started">
+            <img class="background" :src="require('@/assets/background.jpg')">
         </div>
         <div class="toggle_ui" v-bind:style="{ opacity: playing }">
-            <nav>
-                <ul>
-                    <h2>Chiboub</h2>
-                    <li>
-                        <a>Gallery</a>
-                        <a>About</a>
-                        <a>Contact</a>
-                    </li>
-                </ul>
-            </nav>
+            <topBar/>
             <div class="intro">
                 <h1>Welcome to my portfolio</h1>
-                <span>Hi, I'm Hedi Ben Chiboub, I'm a 19 year old self-taught programmer.
-                    You can find more about me in my <span>About</span> page.</span>
+                <span>Hey, I'm Hedi Chiboub, a 19 year old self-taught programmer and I made a little
+                    game for you, click the button below to try it!</span>
             </div>
             <!-- about this game -->
             <button @click="startGame">Play song</button>
@@ -34,52 +26,41 @@
 import * as guitar from '@/scripts/initGame.js';
 import { generate } from '@/scripts/generateSong';
 import * as delay from 'delay';
+import topBar from '@/components/topBar';
 
 export default {
+    components: {
+        topBar
+    },
     data() {
         return {
             playing: '1',
             started: false,
             left_pos_board: '0',
             created: 0,
-            leader: 0,
             queue: [],
-            hittable: false,
-            hit: false
+            leader: 0,
+            score: 0
         }
     },
     methods: {
         startGame: async function() {
-            const KEYS = ['f', 'g', 'h']
-            const STRINGS = { f: 'left', g: 'middle', h: 'right'}
-            const DIRECTION = ['ArrowUp', 'ArrowDown'];
             guitar.createUi(this);
-            generate(this);
-            await delay(4200);
+            generate(this , () => ({
+                    leader: this.leader,
+                }),
+            );
+            // await delay(4200);
             this.started = true;
-            window.addEventListener('keydown', async(e) => {
-                if (KEYS.includes(e.key)) {
-                    if ((this.queue[0] === STRINGS[e.key] && this.hittable) ) {
-                        this.queue.shift();
-                        this.hit = true;
-                        console.log('%c +1', 'color: green');
-                        this.hittable = false
-                    }
-                    else {
-                        console.log('%c -1', 'color: red')
-                    }
-                }
-            });
+            this.$refs.audio.currentTime = 58.7
+            this.$refs.audio.play()
+        },
+        updatescore: function(param) {
+            this.score += param;
         },
         test: function() {
-            if (!this.hit) this.queue.shift();
-            else { 
-                this.hit = false;
-                this.hittable = false
-            }
-        },
-        test1: function() {
-            this.hittable = true
+                this.queue.shift();
+                this.leader += 1;
         },
     },
     created() {
@@ -94,6 +75,13 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
+}
+
+h2 {
+    margin-top: 25vh;
+    color: white;
+    position: absolute;
+    width: 100%;
 }
 
 .background {
@@ -119,8 +107,9 @@ export default {
         color: rgb(222, 222, 222);
         li {
             list-style-type: none;
-            a {
+            .router {
                 padding: 10px;
+                color: rgb(222, 222, 222);
                 text-decoration: underline;
                 cursor: pointer;
                 &:hover {

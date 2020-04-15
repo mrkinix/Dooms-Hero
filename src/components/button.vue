@@ -1,5 +1,5 @@
 <template>
-    <img :key="id" class="pick"
+    <img :key="id" class="pick" v-if='leader <= id'
     v-bind:style="[reverse ? { 'z-index': 9999 - id, left: x_pos, bottom: y_pos,
     transform: 'rotate(180deg)'}
     : { 'z-index': 9999 - id, left: x_pos, bottom: y_pos }]"
@@ -16,9 +16,11 @@ export default {
             y_pos: this.y,
             x_pos: this.x,
             x_initial: this.x,
+            leader: 0,
+            destroyed: false
         };
     },
-    props: ['aa', 'x', 'y', 'action', 'reverse', 'id', 'leader'],
+    props: ['x', 'y', 'action', 'reverse', 'id', ],
     mounted() {
         switch(this.action) {
             case 'right':
@@ -35,16 +37,50 @@ export default {
     },
     methods: {
         close: async function() {
- 
             await delay(3000);
-            this.$emit('destruction')
-            this.$destroy;
-            this.$el.parentNode.removeChild(this.$el);
+            if (!this.destroyed) {
+                this.$emit('destruction');
+                this.$destroy;
+                this.$el.parentNode.removeChild(this.$el);
+            }
         },
+        controller: function() {
+            const KEYS = ['f', 'g', 'h']
+            const STRINGS = { f: 'left', g: 'middle', h: 'right'}
+            window.addEventListener('keydown', (e) => {
+                if (KEYS.includes(e.key)) {
+                    if ((parseInt(this.y_pos, 10) < 24)
+                    && (STRINGS[e.key] === this.action)
+                    && (this.leader === this.id)) {
+                        console.log('%c +1', 'color: green');
+                        this.destroyed = true;
+                        this.$emit('score', 1)
+                        this.$emit('destruction');
+                        // this.$destroy;
+                        this.$el.parentNode.removeChild(this.$el);
+                        console.log('end id: ', this.id)
+                    }
+                    else if (this.leader === this.id) {
+                        console.log('%c -1', 'color: red')
+                        this.$emit('score', -1)
+                        console.log('end id: ', this.id)
+                    }
+                }
+            });
+        }
     },
-    async created() {
-        await delay(2300);
-        this.$emit('hittable');
+
+    watch: {
+        leader : function() {
+            if (this.leader === this.id) {
+                this.controller()
+            }
+        }
+    },
+    created() {
+        if (this.leader === this.id) {
+            this.controller()
+        }
     },
 }
 </script>
