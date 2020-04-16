@@ -15,7 +15,7 @@
                     game for you, click the button below to try it!</span>
             </div>
             <!-- about this game -->
-            <button @click="startGame">Play song</button>
+            <button ref="start" @click="startGame">Play song</button>
         </div>
         <img class="guitar__board" v-bind:style="{ left: `calc(5% + ${left_pos_board}` }"
         :src="require('@/assets/guitar_board.png')" @click="startGame">
@@ -52,8 +52,9 @@ export default {
             );
             // await delay(4200);
             this.started = true;
-            this.$refs.audio.currentTime = 58.7
+            this.$refs.audio.currentTime = 88.8
             this.$refs.audio.play()
+            this.$refs.start.disabled = true
         },
         updatescore: function(param) {
             this.score += param;
