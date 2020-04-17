@@ -1,6 +1,6 @@
-# portfolio
-WIW ASBA ALA RASEK
-test 1 2 3
+# KINX HERO
+
+
 ## Project setup
 ```
 npm install
