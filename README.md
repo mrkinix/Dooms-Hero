@@ -1,4 +1,6 @@
 # KINX HERO
+A guitar hero alike game featuring the song "Doom Rip & Tear".
+This project uses vue js.
 
 
 ## Project setup
