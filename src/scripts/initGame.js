@@ -1,8 +1,9 @@
 import Vue from 'vue';
-import Button from '../components/button.vue';
+import Pick from '../components/pick.vue';
+import * as delay from 'delay';
 
 export const generate = (e, _x, _y, pos, reverse, dataFn) => {
-    const ComponentClass = Vue.extend(Button);
+    const ComponentClass = Vue.extend(Pick);
     const initData = dataFn() || {};
     const data = {};
     const propsData = {
@@ -21,14 +22,17 @@ export const generate = (e, _x, _y, pos, reverse, dataFn) => {
           data[key] = initData[key];
         }
     });
+
     const instance = new ComponentClass({
         data,
         propsData,
         created(){
-            this.$on(['destruction'], () => { e.test() })
-            this.$on(['score'], (param) => { e.updatescore(param) })
+            this.$on(['destruction'], () => { e.pickdestroyed() })
+            this.$on(['score'], (param, index = -1, miss = false) => 
+            {e.updatescore(param, index, miss) })
         },
     });
+
     e.created += 1;
     instance.$mount();
     e.$refs.container.appendChild(instance.$el);
@@ -39,7 +43,7 @@ export const generate = (e, _x, _y, pos, reverse, dataFn) => {
             });
         };
     
-      const unwatch = e.$watch(dataFn || {}, dataSetter);
+    const unwatch = e.$watch(dataFn || {}, dataSetter);
 
     return {
         instance,
@@ -59,23 +63,26 @@ export const createUi = (e) => {
     e.left_pos_board = '50vw - 0.56*70vh - 5%';
 };
 
-export const leftInit = (e, reverse, dataFn) => {
+export const leftInit = async (e, reverse, dataFn, tone = 0) => {
     e.queue.push('left')
     const X_POSITION = 'calc(50vw - 0.56*70vh + 30vh)';
     const Y_POSITION = '70vh';
-    return generate(e, X_POSITION, Y_POSITION, 'left', reverse, dataFn);
+    generate(e, X_POSITION, Y_POSITION, 'left', reverse, dataFn);
+    await delay(tone);
 };
 
-export const rightInit = (e, reverse, dataFn) => {
+export const rightInit = async (e, reverse, dataFn, tone = 0) => {
     e.queue.push('right')
     const X_POSITION = 'calc(50vw - 0.56*70vh  + 42.51vh)';
     const Y_POSITION = '70vh';
-    return generate(e, X_POSITION, Y_POSITION, 'right', reverse, dataFn);
+    generate(e, X_POSITION, Y_POSITION, 'right', reverse, dataFn);
+    await delay(tone);
 };
 
-export const middleInit = (e, reverse, dataFn) => {
+export const middleInit = async (e, reverse, dataFn, tone = 0) => {
     e.queue.push('middle')
     const X_POSITION = 'calc(50vw - 0.56*70vh + 36.54vh)';
     const Y_POSITION = '70vh';
-    return generate(e, X_POSITION, Y_POSITION, 'middle', reverse, dataFn);
+    generate(e, X_POSITION, Y_POSITION, 'middle', reverse, dataFn);
+    await delay(tone);
 };

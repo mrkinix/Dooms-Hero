@@ -1,0 +1,6 @@
+$font-dir: "/fonts/";
+
+@font-face {
+  font-family: "doomFont";
+  src: url("#{$font-dir}AmazDooMRight.ttf");
+}

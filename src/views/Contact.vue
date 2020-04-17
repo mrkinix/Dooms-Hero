@@ -54,6 +54,7 @@ export default {
 form {
     position: fixed;
     height: auto;
+    filter: drop-shadow(8px 8px 10px rgba(0, 0, 0, 0.712));
     padding: 5vh 0;
     width: 80vh;
     top: 20vh;

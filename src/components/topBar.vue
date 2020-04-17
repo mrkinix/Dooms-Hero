@@ -1,20 +1,18 @@
 <template>
     <nav>
         <ul>
-            <h2><router-link class="router1" to="/" >Chiboub</router-link></h2>
+            <h2><router-link class="router1" to="/" >Kinx Hero</router-link></h2>
             <li>
-                <router-link class="router" to="/contact">Gallery</router-link>
-                <router-link class="router" to="/contact">About</router-link>
-                <router-link class="router" to="/contact">Contact</router-link>
             </li>
         </ul>
     </nav>
 </template>
 
 <style lang="scss" scoped>
+
 .router1 {
-   color: white;
-   text-decoration: none; 
+    color: white;
+    text-decoration: none; 
 }
 ul {
     font-size: 22px;
@@ -28,7 +26,7 @@ ul {
         .router {
             padding: 10px;
             color: rgb(222, 222, 222);
-            text-decoration: underline;
+            text-decoration: none;
             cursor: pointer;
             &:hover {
                 color: white;

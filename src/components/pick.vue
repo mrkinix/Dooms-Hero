@@ -39,6 +39,7 @@ export default {
         close: async function() {
             await delay(3000);
             if (!this.destroyed) {
+                this.$emit('score', -1, undefined, true)
                 this.$emit('destruction');
                 this.$destroy;
                 this.$el.parentNode.removeChild(this.$el);
@@ -47,23 +48,20 @@ export default {
         controller: function() {
             const KEYS = ['f', 'g', 'h']
             const STRINGS = { f: 'left', g: 'middle', h: 'right'}
+            const ACTIONS = ['left', 'middle', 'right']
             window.addEventListener('keydown', (e) => {
                 if (KEYS.includes(e.key)) {
                     if ((parseInt(this.y_pos, 10) < 24)
                     && (STRINGS[e.key] === this.action)
                     && (this.leader === this.id)) {
-                        console.log('%c +1', 'color: green');
                         this.destroyed = true;
-                        this.$emit('score', 1)
+                        this.$emit('score', 1, ACTIONS.indexOf(this.action))
                         this.$emit('destruction');
                         // this.$destroy;
                         this.$el.parentNode.removeChild(this.$el);
-                        console.log('end id: ', this.id)
                     }
                     else if (this.leader === this.id) {
-                        console.log('%c -1', 'color: red')
                         this.$emit('score', -1)
-                        console.log('end id: ', this.id)
                     }
                 }
             });
