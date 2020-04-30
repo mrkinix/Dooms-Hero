@@ -1,7 +1,7 @@
 <template>
     <nav>
         <ul>
-            <h2><router-link class="router1" to="/" >Kinx Hero</router-link></h2>
+            <h2><router-link class="router1" to="/" >Doom's Hero</router-link></h2>
             <li>
             </li>
         </ul>

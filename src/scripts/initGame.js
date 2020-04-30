@@ -3,6 +3,9 @@ import Pick from '../components/pick.vue';
 import * as delay from 'delay';
 
 export const generate = (e, _x, _y, pos, reverse, dataFn) => {
+    // Here the magic happens, we generate the pick and link
+    // it to the Home component so that they can communicate
+    // to each other
     const ComponentClass = Vue.extend(Pick);
     const initData = dataFn() || {};
     const data = {};

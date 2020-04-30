@@ -1,5 +1,7 @@
 <template>
     <div class="home" ref="container">
+        <div class="tuto" v-bind:style="{ opacity: playing }"><h1>HOW TO PLAY</h1><br> 
+        [F] LEFT PICK <br> [G] MIDDLE PICK <br> [H] RIGHT PICK</div>
         <audio ref="audio">
             <source :src="require('@/assets/songs/doom_Rip_and_Tear.mp3')" type="audio/mp3">
         </audio>
@@ -20,18 +22,14 @@
         :src="require('@/assets/guitar_board.png')">
         <ul v-if="!hideUI" class="menu">
             <li @click="startGame">PLAY</li>
-            <li>TUTORIAL</li>
-            <li>SETTINGS</li>
-            <li>ABOUT</li>
             <router-link class="router" to="/contact">CONTACT</router-link>                
-            <li>DONATE</li>
         </ul>
         <div v-if="gameOver" class="result">
             <section>
                 <ul>
                     <h1>RESULT</h1>
                     <li>SCORE: {{percent}}%.</li>
-                    <li>MISSES: {{627 - hits}}.</li>
+                    <li>MISSES: {{misses}}.</li>
                     <li>HITS: {{hits}}.</li>
                 </ul>
                 <div>
@@ -63,6 +61,7 @@ export default {
             queue: [],
             leader: 0,
             score: 0,
+            misses: 0,
             percent: 100,
             hits: 0,
             hit: ['none', 'none', 'none'],
@@ -83,10 +82,11 @@ export default {
             this.started = true;
             player.currentTime = 0
             player.play()
-            await delay(120000);
+            await delay(121000);
             player.pause();
-            player.currentTime = 0;
+            player.currentTime = 0
             this.gameOver = true
+            this.$forceUpdate()
         },
         resetData: function() {
             this.playing = '1'
@@ -97,6 +97,7 @@ export default {
             this.queue = []     
             this.leader = 0
             this.score = 0
+            this.misses = 0
             this.percent = 100
             this.hits = 0
             this.hit = ['none', 'none', 'none']
@@ -109,6 +110,7 @@ export default {
             }
             this.score += param;
             if (miss) this.percent = Math.round((this.percent - 0.158)*100)/100;
+            if (miss || param < 0) this.misses += 1
         },
         pickdestroyed: function() {
             this.queue.shift();
@@ -136,9 +138,11 @@ export default {
 
 .result {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.692);
+    background: rgba(0, 0, 0, .692);
     z-index: 999999999;
     section {
         height: 80vh;
@@ -146,9 +150,9 @@ export default {
         width: 80vh;
         border-radius: 12px;
         margin: 10vh calc(50vw - 40vh);
-        filter: drop-shadow(8px 8px 10px rgba(201, 201, 201, 0.459));
+        filter: drop-shadow(8px 8px 10px rgba(201, 201, 201, .459));
         border: solid 1px white;
-        background: rgba(19, 19, 19, 0.76);
+        background: rgba(19, 19, 19, .76);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -173,7 +177,7 @@ export default {
             font-size: 20px;
             color: black;
             &:hover {
-                box-shadow: 0 0 18px 1px rgba(80, 68, 54, 0.445);
+                box-shadow: 0 0 18px 1px rgba(80, 68, 54, .445);
                 opacity: 1;
             }
         }
@@ -187,8 +191,8 @@ export default {
     padding-left: 15px;
     display: inline-block;
     width: calc(100% - 15px);
-    border-radius: 0 1200px 0 0;
-    background: rgba(255, 255, 255, 0.151);
+    border-radius: 0 10px 0 0;
+    background: rgba(255, 255, 255, .051);
     border: solid 1px white;
     list-style-type: none;
     &:hover {
@@ -208,6 +212,9 @@ h2 {
 }
 
 .background {
+    position: fixed;
+    top: 0;
+    left: 0;
     height: 100%;
     width: auto;
     opacity: .1;
@@ -228,14 +235,14 @@ h2 {
     padding: 0;
     height: 100%;
     width: 100%;
-    background: black;
+    background: linear-gradient(130deg,rgb(108, 70, 0), black, black);
     position: fixed;
     top: 0;
     left: 0;
     .menu {
         z-index: 999;
         margin-left: 5%;
-        margin-top: 30vh;
+        margin-top: 10vh;
         font-size: 22px;
         display: block;
         width: 30vw;
@@ -244,8 +251,8 @@ h2 {
         li {
             text-align: left;
             padding-left: 15px;
-            border-radius: 0 1200px 0 0;
-            background: rgba(255, 255, 255, 0.151);
+            border-radius: 0 10px 0 0;
+            background: rgba(255, 255, 255, .051);
             border: solid 1px white;
             list-style-type: none;
             margin: 5px 0px;
@@ -266,10 +273,21 @@ h2 {
     .test {
         height: 70vh;
         width: calc(70vh * 1.123 / 4);
-        background: rgba(211, 30, 30, 0.5);
+        background: rgba(211, 30, 30, .5);
         position: fixed;
         left: 25%;
         bottom: 22.25vh;        
     }
+}
+.tuto {
+    color: white;
+    background: linear-gradient(to left, rgb(48, 27, 37), rgb(103, 74, 78));
+    padding: 10px;
+    width: 30vw;
+    margin-left: calc(5% + 40px);
+    margin-top: 10%;
+    line-height: 20px;
+    border-radius: 12px;
+    font-size: 20px;
 }
 </style>

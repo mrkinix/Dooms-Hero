@@ -1,4 +1,11 @@
 /* eslint-disable no-plusplus */
+/*  
+    All the values below were calculated 
+    based on the guitar height and width.
+    All these functions control the pick
+    path.
+*/
+
 export const middleTrajectory = (e) => {
     for (let i = 0; i < 50; i++) {
         setTimeout(() => {

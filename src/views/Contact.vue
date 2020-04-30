@@ -1,6 +1,6 @@
 <template>
     <div class="contact">
-            <form>
+            <form action="#">
                 <div>
                     <label for="email">EMAIL:</label>
                     <input id="email" type="email" v-model="email" required>
@@ -13,14 +13,18 @@
                     <label for="content">Content:</label>
                     <textarea rows="10" id="content" v-model="content" required></textarea>
                 </div>
-                <button :class="[email && cc && content ? activeClass : '']" >Submit</button>
+                <button  @click="sendMail" 
+                :class="[email && cc && content ? activeClass : '']" >Submit</button>
             </form>
         <topBar/>
+        <div class="success" v-bind:style="{ display: visibility }">Mail sent successfully!</div>
     </div>
 </template>
 
 <script>
 import topBar from '@/components/topBar'
+import emailjs from "emailjs-com"
+
 export default {
     components: {
         topBar
@@ -30,9 +34,25 @@ export default {
             email: '',
             cc: '',
             content: '',
+            visibility: 'none',
             activeClass: 'active',
         }
-    }
+    },
+    methods: {
+        sendMail: function() {
+            emailjs.init('user_4N1mGQbhM1hEQAz7OPWUw');
+            const service_id = 'mrkinixgmail';
+            const template_id = 'template_Ej6r6BN3';
+            const template_params = {
+                name: this.cc,
+                reply_email: this.email,
+                message: this.content
+            };
+
+            emailjs.send(service_id,template_id,template_params);
+            this.visibility = 'block'
+        }
+    },
 }
 </script>
 
@@ -125,6 +145,35 @@ button {
 
 .active {
     background: rgb(89, 215, 188);;
+}
+
+.success {
+    width: 60vh;
+    line-height: 28px;
+    padding: 2px;
+    border-radius: 4px;
+    font-size: 24px;
+    color: white;
+    background: rgb(66, 247, 154);
+    position: absolute;
+    left: calc(50% - 30vh);
+    animation-name: pop;
+    animation-duration: 2s;
+    display: none;
+    bottom: -32px;
+    animation-timing-function: ease;
+
+}
+
+@keyframes pop {
+    0% {
+        bottom: -32px;
+        opacity: .2;
+    }
+    100% {
+        bottom: 24px;
+        opacity: 1;
+    }
 }
 
 </style>
